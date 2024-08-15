@@ -1,7 +1,7 @@
 
 ## Pip modules
 from aiogram import Router, types
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 
 ## Bot modules
 from bot_modules.bot_logger import on_message_handler_logger
@@ -18,7 +18,11 @@ private_user_router: Router = Router(
 async def start_command(
     message: types.Message,
 ) -> None:
+    """/start command for telegram bot. Send information about bot.
     
+    args:
+        message (types.Message): Message object.
+    """
     ## Logging the command
     on_message_handler_logger(
         message_text=message.text,
@@ -31,15 +35,73 @@ async def start_command(
     )
     
     ANSWER_TO_START_COMMAND: str = f"""
-Hello dear {message.from_user.full_name}! 🖐️
+Hello, {message.from_user.full_name}! 🖐️
 
-This bot 🤖 can help you to get the weather in your city. 
-To get the weather, simply send me a message with your city name.
-I'll send you all the information about the weather in your city.
-    """
+I can help you get full information about the weather in the city of interest. 🏙️
+To get it, simply write /weather <county name> <city name> that interests you.
+🤖 As your assistant, I'll try to send you all the information I have to help you.
+"""
 
     ## Reply to start command.
     await message.reply(
         text=ANSWER_TO_START_COMMAND
     )
+
+
+@private_user_router.message(Command("help"))
+async def help_command(
+    message: types.Message
+) -> None:
+    """Handler of the /help command. Send user help information about using the bot.
+
+    Args:
+        message (types.Message): Message object.
+    """
+    ## Logging the command
+    on_message_handler_logger(
+        message_text=message.text,
+        command_name="help",
+        chat_id=message.chat.id,
+        username=message.from_user.full_name,
+        message_id=message.message_id,
+        user_id=message.from_user.id,
+        is_bot=message.from_user.is_bot,
+    )
     
+    ANSWER_TO_HELP_COMMAND: str = f"""
+Hi {message.from_user.full_name},
+I can tell you the weather when you use the /weather <county> <city> command,
+where <county> and <city> is your choose to get information about. 🏙️
+"""
+
+    await message.reply(
+        text=ANSWER_TO_HELP_COMMAND
+    )
+
+
+@private_user_router.message(Command("weather"))
+async def weather_command(
+    message: types.Message
+) -> None:
+    """Handler of the /weather command. Send to user all the information about
+    weather in city.
+
+    Args:
+        message (types.Message): Message object.
+    """
+    
+    ## Logging the command
+    on_message_handler_logger(
+        message_text=message.text,
+        command_name="weather",
+        chat_id=message.chat.id,
+        username=message.from_user.full_name,
+        message_id=message.message_id,
+        user_id=message.from_user.id,
+        is_bot=message.from_user.is_bot,
+    )
+    
+    ## Get the city name from used command.
+    city_name: str = message.text.replace("/weather", "")
+    
+    ## TODO: Add parser logic here. 

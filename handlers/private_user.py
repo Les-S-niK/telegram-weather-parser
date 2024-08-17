@@ -5,6 +5,7 @@ from aiogram.filters import CommandStart, Command
 
 ## Bot modules
 from bot_modules.bot_logger import on_message_handler_logger
+from bot_modules.weather_parser import WeatherParser
 
 
 ## Create router for user private channels.
@@ -101,7 +102,45 @@ async def weather_command(
         is_bot=message.from_user.is_bot,
     )
     
-    ## Get the city name from used command.
-    city_name: str = message.text.replace("/weather", "")
-    
-    ## TODO: Add parser logic here. 
+    ## Fetch city and country name from command text.
+    message_text: str = message.text
+    ## Split country and city name in text.
+    ## I get this list: ["/weather", "County", "City"]
+    splited_text: list = message_text.split(sep=" ")
+    ## Get county by 1 list index:
+    country: str = splited_text[1]
+    ## Get city by 2 list index:
+    city: str = splited_text[2]
+
+    ## Initialize WeatherParser
+    weather_parser: WeatherParser = WeatherParser(
+        country=country,
+        city=city
+    )
+    ## Get structured weather information:
+    weather_info: dict = weather_parser.weather_information
+    ## Fetch all the dict data to variables.
+    tempetarure: str = weather_info.get("temp")
+    pressure: str = weather_info.get("pressure")
+    humidity: str = weather_info.get("humidity")
+    max_wind: str = weather_info.get("max_wind")
+    cloudness: str = weather_info.get("cloudness")
+    visibility: str = weather_info.get("visibility")
+    uv_index: str = weather_info.get("uv_index")
+    ## Fetch username.
+    username: str = message.from_user.full_name
+    ## Structuring the answer to user.
+    answer_to_user: str = f"""
+        {username} here weather information in {city}.
+        Temperature: {tempetarure}
+        Pressure: {pressure}
+        Humidity: {humidity}
+        Max wind speed: {max_wind}
+        Cloudness: {cloudness}
+        Visibility: {visibility}
+        UV index: {uv_index}
+        """
+    ## Send answer to user.
+    await message.reply(
+        text=answer_to_user
+    )

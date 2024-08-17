@@ -13,8 +13,6 @@ from config import TOKEN, ALLOWED_UPDATES, BOT_COMMANDS
 from handlers.private_user import private_user_router
 from bot_modules.bot_logger import start_logger
 
-## TODO: Create weather parser. Add new bot answers.
-
 
 ## Load dotenv from .env file.
 load_dotenv()

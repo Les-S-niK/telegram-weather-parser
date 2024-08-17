@@ -6,7 +6,6 @@ from os.path import dirname
 from aiogram.types import BotCommand
 
 
-
 ## * CONSTANTS
 ## Get the TOKEN from .env file. Where "TOKEN" is .env key.
 TOKEN: str = getenv("TOKEN")
@@ -22,6 +21,6 @@ ALLOWED_UPDATES: list = [
 BOT_COMMANDS: list = [
     BotCommand(
         command="help",
-        description="Need a help? This command can help you with bot using."
+        description="Need a help? This command can help you with using the bot."
     )
 ]

@@ -194,10 +194,9 @@ class WeatherParser(object):
         ## Generate random headers and return it.
         return headers.generate()
 
-
 if __name__ == "__main__":
     weather = WeatherParser(
-        country="russia",
-        city="sochi"
+        "Russia",
+        "Moscow"
     )
-    print(weather.weather_information)
+    weather.create_html_file()
